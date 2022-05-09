@@ -1,23 +1,35 @@
 <?xml version="1.0"?>
 <launch>
 
-    <!-- launch smart wheel driver -->
-    <include file="$(find smart_wheel_driver)/launch/narko_joy.launch"/>
+    <arg name="robile_config" default="robile2"/>
+    <arg name="start_smart_wheel_driver" default="true"/>
+    <arg name="start_sick_laser_scanner" default="true"/>
+    <arg name="start_robosense_3d_laser_scanner" default="false"/>
 
-    <!-- Robosense -->
-    <include file="$(find robile_bringup)/ros/launch/sick_laser.launch" >
-        <arg name="node_name" value="base_laser_front"/>
-        <arg name="frame_id" value="base_laser_front"/>
-        <arg name="host" default="192.168.1.35"/>
-    </include>
+    <!-- Load the robot description from the urdf model -->
+    <param name="robot_description" command="rosrun xacro xacro '$(find robile_description)/robots/$(arg robile_config).urdf.xacro'"/>
 
-    <!-- Filter laser points with self collision -->
-    <node pkg="laser_filters" type="scan_to_scan_filter_chain" name="laser_filter">
-        <rosparam command="load" file="$(find robile_bringup)/ros/config/sick_laser_filter_config.yaml" />
+    <node pkg="robot_state_publisher" name="robot_state_publisher" type="robot_state_publisher">
+        <param name="publish_frequency" value="10"/>
     </node>
 
+    <!-- launch smart wheel driver -->
+    <include file="$(find smart_wheel_driver)/launch/narko_joy.launch" if="$(arg start_smart_wheel_driver)"/>
+
+    <group if="$(arg start_sick_laser_scanner)">
+        <!-- Sick laser scanner -->
+        <include file="$(find robile_bringup)/ros/launch/sick_laser.launch">
+            <arg name="host" default="192.168.1.35"/>
+        </include>
+
+        <!-- Filter laser points with self collision -->
+        <node pkg="laser_filters" type="scan_to_scan_filter_chain" name="laser_filter">
+            <rosparam command="load" file="$(find robile_bringup)/ros/config/sick_laser_filter_config.yaml" />
+        </node>
+    </group>
+
     <!-- Robosense -->
-    <include file="$(find robile_bringup)/ros/launch/robosense.launch" >
+    <include file="$(find robile_bringup)/ros/launch/robosense.launch" if="$(arg start_robosense_3d_laser_scanner)">
         <arg name="frame_id" value="base_laser" />
         <arg name="output_topic" value="rslidar_points" />
         <!-- 
@@ -29,14 +41,4 @@
         <arg name="difop_port" value="7789" />
     </include>
 
-    <!-- Load the robot description from the urdf model -->
-    <param name="robot_description" command="rosrun xacro xacro '$(find robile_description)/robots/4_wheel_with_sick_config.urdf.xacro'"/>
-
-    <node pkg="joint_state_publisher" name="joint_state_publisher" type="joint_state_publisher">
-        <param name="rate" value="10"/>
-    </node>
-
-    <node pkg="robot_state_publisher" name="robot_state_publisher" type="robot_state_publisher">
-        <param name="publish_frequency" value="10"/>
-    </node>
 </launch>
