@@ -1,6 +1,6 @@
 [submodule "ros_rslidar"]
     path = ros_rslidar
-    url = https://github.com/RoboSense-LiDAR/ros_rslidar.git
+	url = https://github.com/Sushant-Chavan/ros_rslidar.git
     branch = master
 
 [submodule "robile_description"]
