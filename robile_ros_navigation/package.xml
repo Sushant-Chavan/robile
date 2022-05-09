@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>robile_ros_navigation</name>
+  <version>0.0.0</version>
+  <description>The navigation package for robile using ROS packages </description>
+
+  <maintainer email="sushant.chavan@smail.inf.h-brs.de.com">Sushant Chavan</maintainer>
+  <author email="sushant.chavan@smail.inf.h-brs.de.com">Sushant Chavan</author>
+
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>amcl</depend>
+  <depend>move_base</depend>
+
+</package>

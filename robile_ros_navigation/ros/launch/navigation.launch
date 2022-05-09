@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+    <!-- Start the map_server -->
+    <arg name="map_file" default="$(find robile_environments)/ros/maps/corridor.yaml"/>
+    <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
+
+    <!-- Start AMCL localization -->
+    <include file="$(find robile_ros_navigation)/ros/launch/amcl.launch">
+        <arg name="scan_topic" value="/scan_filtered"/>
+    </include>
+
+    <!-- Start Move base -->
+    <include file="$(find robile_ros_navigation)/ros/launch/move_base_dwa.launch"/>
+
+</launch>
