@@ -1,0 +1,9 @@
+[submodule "ros_rslidar"]
+    path = ros_rslidar
+    url = https://github.com/RoboSense-LiDAR/ros_rslidar.git
+    branch = master
+
+[submodule "robile_description"]
+    path = robile_description
+    url = https://github.com/kelo-robotics/robile_description.git
+    branch = master
