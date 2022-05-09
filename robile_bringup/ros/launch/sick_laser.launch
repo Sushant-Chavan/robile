@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="node_name" default="laser"/>
+    <arg name="frame_id" default="base_laser"/>
+    <arg name="host"/>
+    <node pkg="lms1xx" name="$(arg node_name)" type = "LMS1xx_node" output="screen">
+        <param name="host" type="string" value="$(arg host)"/>
+        <param name="frame_id" type="string" value="$(arg frame_id)"/>
+    </node>
+</launch>

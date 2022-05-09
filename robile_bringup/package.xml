@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>robile_bringup</name>
+  <version>0.0.0</version>
+  <description>The robile_bringup package to launch all hardware drivers on the robile</description>
+
+  <maintainer email="sushant.chavan@smail.inf.h-brs.de.com">Sushant Chavan</maintainer>
+  <author email="sushant.chavan@smail.inf.h-brs.de.com">Sushant Chavan</author>
+
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+</package>
