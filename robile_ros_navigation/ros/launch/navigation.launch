@@ -1,14 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
 
-    <!-- Start the map_server -->
     <arg name="map_file" default="$(find robile_environments)/ros/maps/corridor.yaml"/>
-    <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
+    <arg name="cloud_file" default="$(find robile_environments)/ros/point_clouds/brsu_ropod.pcd"/>
 
-    <!-- Start AMCL localization -->
-    <include file="$(find robile_ros_navigation)/ros/launch/amcl.launch">
-        <arg name="scan_topic" value="/scan_filtered"/>
-    </include>
+    <arg name="use_3d_localization" default="false"/>
+
+    <group if="$(arg use_3d_localization)">
+        <!-- publish map cloud -->
+        <node name="map_cloud_publisher" pkg="pcl_ros" type="pcd_to_pointcloud" args="$(arg cloud_file) 2.0">
+            <param name="~frame_id" value="map"/>
+            <remap from="/cloud_pcd" to="/map_points"/>
+        </node>
+
+        <!-- Start MCL_3DL localization -->
+        <include file="$(find robile_ros_navigation)/ros/launch/mcl_3dl.launch" if="$(arg use_3d_localization)">
+            <arg name="sensor_cloud_topic" value="/rslidar_points"/>
+            <arg name="map_cloud_topic" value="/map_points"/>
+        </include>
+    </group>
+
+    <group unless="$(arg use_3d_localization)">
+        <!-- Start the map_server -->
+        <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
+
+        <!-- Start AMCL localization -->
+        <include file="$(find robile_ros_navigation)/ros/launch/amcl.launch" unless="$(arg use_3d_localization)">
+            <arg name="scan_topic" value="/scan_filtered"/>
+        </include>
+    </group>
 
     <!-- Start Move base -->
     <include file="$(find robile_ros_navigation)/ros/launch/move_base_dwa.launch"/>
